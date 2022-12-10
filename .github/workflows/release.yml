@@ -43,7 +43,14 @@ jobs:
         # List of GOOS and GOARCH pairs from `go tool dist list`
         goosarch:
           - 'linux/amd64'
-          # etc
+          - 'linux/arm64'
+          - 'netbsd/amd64'
+          - 'netbsd/arm64'
+          - 'windows/amd64'
+          - 'windows/arm64'
+          - 'freebsd/amd64'
+          - 'freebsd/arm'
+          - 'freebsd/arm64'
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
