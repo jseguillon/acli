@@ -20,7 +20,7 @@ sudo chmod +x /usr/local/bin/chat-gpt-cli
 
 ### Get open API key
 
-Sign up for an open API account on their website: https://beta.openai.com/docs/getting-started/application-setup. After creating an account and signing in, you can create an API key by clicking on your user name in the top right corner, then selecting "API Keys" from the dropdown menu. Click on the "New API Key" button to create a new API key and copy it to your clipboard. 
+Sign up for an open API account on their website: https://openai.com/api/. After creating an account and signing in, you can create an API key by clicking on your user name in the top right corner, then selecting "API Keys" from the dropdown menu. Click on the "New API Key" button to create a new API key and copy it to your clipboard. 
 
 
 ### Run
