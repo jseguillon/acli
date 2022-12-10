@@ -11,8 +11,8 @@ A command line interface for chatting with the OpenAI GPT-3 language model.
 Go to [releases page](https://github.com/jseguillon/chat-gpt-cli/releases), find appropriate binary for your system. Download, install where you want and `chmod +x` it. Example: 
 
 ```
-curl -SL -o [release_url] /usr/local/bin/chat-gpt-cli
-chmod +x /usr/local/bin/chat-gpt-cli
+sudo curl -SL [release_url] -o /usr/local/bin/chat-gpt-cli
+sudo chmod +x /usr/local/bin/chat-gpt-cli
 ```
 
 
@@ -28,7 +28,7 @@ Sign up for an open API account on their website: https://beta.openai.com/docs/g
 Set your API key via the `CHAT_GPT_API_KEY` environnement variable, then run `chat-gpt-cli`:
 
 ```
-chat-gpt-cli "enter here your question"
+CHAT_GPT_API_KEY="XXXXX" chat-gpt-cli "enter here your question"
 ```
 
 The program will send the provided string argument to GPT-3 and print the response to the command line.
