@@ -8,7 +8,7 @@ A command line interface for chatting with the OpenAI GPT-3 language model.
 
 ## Install
 
-Go to [releases page](releases), find appropriate binary for your system. Download, install where you want and `chmod +x` it. Example: 
+Go to [releases page](https://github.com/jseguillon/chat-gpt-cli/releases), find appropriate binary for your system. Download, install where you want and `chmod +x` it. Example: 
 
 ```
 curl -SL -o [release_url] /usr/local/bin/chat-gpt-cli
