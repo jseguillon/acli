@@ -82,4 +82,5 @@ func main() {
 	for _, c := range obj.Choices {
 		fmt.Print(c.Text)
 	}
+	fmt.Println("")
 }
