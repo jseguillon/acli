@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 )
 
 func main() {
@@ -26,14 +27,20 @@ func main() {
 	// Create a new HTTP client
 	client := &http.Client{}
 
+	// Ensure prompt max_tokens is not more than 4096
+	max_tokens := 2048
+	max_tokens_with_prompt := 4096 - len(text)
+	if max_tokens_with_prompt < 2048 {
+		max_tokens = max_tokens_with_prompt
+	}
+
 	// Create JSON data to send in the request body
 	var jsonData = []byte(`
 	{
-		"model": "text-davinci-002",
+		"model": "text-davinci-003",
 		"prompt": "` + text + `",
-		"max_tokens": 2048,
-		"temperature": 0.5,
-		"top_p": 1,
+		"max_tokens": ` + strconv.Itoa(max_tokens) + `,
+		"temperature": 0.1,
 		"frequency_penalty": 0,
 		"presence_penalty": 0,
 		"stream": false
