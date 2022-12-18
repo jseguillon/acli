@@ -8,7 +8,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strconv"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -53,20 +52,7 @@ func main() {
 
 			// Create a new HTTP client
 			client := &http.Client{}
-
-			// Create JSON data to send in the request body
-			var jsonData = []byte(`
-			{
-				"model": "text-davinci-003",
-				"prompt": "` + text + `",
-				"max_tokens": ` + strconv.Itoa(maxTokens) + `,
-				"temperature": ` + fmt.Sprintf("%f", temperature) + `,
-				"frequency_penalty": ` + fmt.Sprintf("%f", frequencyPenalty) + `,
-				"presence_penalty": ` + fmt.Sprintf("%f", presencePenalty) + `,
-				"n": ` + strconv.Itoa(n) + `,
-				"stream": false
-			}
-			`)
+			jsonData := makeQuery(text, maxTokens, temperature, frequencyPenalty, presencePenalty, n)
 
 			// Build the request
 			req, err := http.NewRequest("POST", "https://api.openai.com/v1/completions", bytes.NewBuffer(jsonData))
@@ -137,4 +123,37 @@ func main() {
 	if err := rootCmd.Execute(); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func makeQuery(text string, maxTokens int, temperature float32, frequencyPenalty float32, presencePenalty float32, n int) []byte {
+	// GPTConfig contains the default settings for the GPT API request.
+	type GPTConfig struct {
+		Model            string  `json:"model"`
+		Prompt           string  `json:"prompt"`
+		MaxTokens        int     `json:"max_tokens"`
+		Temperature      float32 `json:"temperature"`
+		FrequencyPenalty float32 `json:"frequency_penalty"`
+		PresencePenalty  float32 `json:"presence_penalty"`
+		N                int     `json:"n"`
+		Stream           bool    `json:"stream"`
+	}
+
+	query := &GPTConfig{
+		Model:            "text-davinci-003",
+		Prompt:           text,
+		MaxTokens:        maxTokens,
+		Temperature:      temperature,
+		FrequencyPenalty: frequencyPenalty,
+		PresencePenalty:  presencePenalty,
+		N:                n,
+		Stream:           false,
+	}
+	var jsonData, err = json.Marshal(query)
+
+	if err == nil {
+		return jsonData
+	} else {
+		log.Fatal("Could not build GPT query", err)
+	}
+	return nil
 }
