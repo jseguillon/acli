@@ -46,6 +46,9 @@ func main() {
 			maxTokensWithPrompt := 4096 - len(text)
 			if maxTokensWithPrompt < 4096 {
 				maxTokens = maxTokensWithPrompt
+				if maxTokens < 0 {
+					log.Fatal("Error prompt is too long. Model max token is 4096 but you provided a prompt of length: ", len(text))
+				}
 			}
 
 			// Create a new HTTP client
