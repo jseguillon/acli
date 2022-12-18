@@ -14,6 +14,7 @@ import (
 )
 
 func main() {
+	// Declare variables for command-line arguments
 	var apiKey string
 	var text string
 	var maxTokens int
@@ -22,6 +23,7 @@ func main() {
 	var presencePenalty float32
 	var n int
 
+	// Define the root command
 	var rootCmd = &cobra.Command{
 		Use:   "gpt-chat",
 		Short: "Send a message to GPT chat and get a response. Needs CHAT_GPT_API_KEY env var to be defined.",
@@ -38,12 +40,15 @@ func main() {
 			}
 			text = args[0]
 
+			// Validate the temperature argument
 			if temperature < 0 || temperature > 1 {
 				log.Fatal("Please provide a temperature between 0 and 1")
 			}
+			// Validate the frequency penalty argument
 			if frequencyPenalty < -2.0 || frequencyPenalty > 2.0 {
 				log.Fatal("Please provide a frequency penalty between -2.0 and 2.0")
 			}
+			// Validate the presence penalty argument
 			if presencePenalty < -2.0 || presencePenalty > 2.0 {
 				log.Fatal("Please provide a presence penalty between -2.0 and 2.0")
 			}
@@ -114,6 +119,7 @@ func main() {
 		},
 	}
 
+	// Define command-line flags
 	rootCmd.Flags().IntVarP(&maxTokens, "max-tokens", "m", 2048, `The maximum number of tokens to generate in the completion. 
 The token count of your prompt plus max_tokens cannot exceed the model's context length. Max 4096.`)
 	rootCmd.Flags().Float32VarP(&temperature, "temperature", "t", 0.1, `What sampling temperature to use. 
@@ -127,11 +133,13 @@ Positive values penalize new tokens based on their existing frequency in the tex
 Note: Because this parameter generates many completions, it can quickly consume your token quota. 
 Use carefully and ensure that you have reasonable settings for max_tokens and stop.`)
 
+	// Parse the command-line arguments
 	if err := rootCmd.Execute(); err != nil {
 		log.Fatal(err)
 	}
 }
 
+// makeQuery constructs a JSON object for the POST request to the OpenAI API
 func makeQuery(text string, maxTokens int, temperature float32, frequencyPenalty float32, presencePenalty float32, n int) []byte {
 	// GPTConfig contains the default settings for the GPT API request.
 	type GPTConfig struct {
@@ -145,6 +153,7 @@ func makeQuery(text string, maxTokens int, temperature float32, frequencyPenalty
 		Stream           bool    `json:"stream"`
 	}
 
+	// Marshal the JSON object into a byte array
 	query := &GPTConfig{
 		Model:            "text-davinci-003",
 		Prompt:           text,
