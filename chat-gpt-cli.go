@@ -24,8 +24,14 @@ func main() {
 
 	var rootCmd = &cobra.Command{
 		Use:   "gpt-chat",
-		Short: "Send a message to GPT chat and get a response",
+		Short: "Send a message to GPT chat and get a response. Needs CHAT_GPT_API_KEY env var to be defined.",
 		Run: func(cmd *cobra.Command, args []string) {
+			// Get the API key from the CHAT_GPT_API_KEY environment variable
+			apiKey = os.Getenv("CHAT_GPT_API_KEY")
+			if apiKey == "" {
+				log.Fatal("Please set the CHAT_GPT_API_KEY environment variable")
+			}
+
 			// Get the string argument to send to GPT chat
 			if len(args) < 1 {
 				log.Fatal("Please provide a string argument to send to GPT chat")
@@ -108,17 +114,18 @@ func main() {
 		},
 	}
 
-	rootCmd.Flags().IntVarP(&maxTokens, "max-tokens", "m", 2048, `The maximum number of tokens to generate in the completion. The token count of your prompt plus max_tokens cannot exceed the model's context length. Most models have a context length of 2048 tokens (except for the newest models, which support 4096).`)
-	rootCmd.Flags().Float32VarP(&temperature, "temperature", "t", 0.1, `What sampling temperature to use. Higher values means the model will take more risks. Try 0.9 for more creative applications, and 0 (argmax sampling) for ones with a well-defined answer.`)
-	rootCmd.Flags().Float32VarP(&frequencyPenalty, "frequency-penalty", "f", 0, `Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.`)
-	rootCmd.Flags().Float32VarP(&presencePenalty, "presence-penalty", "p", 0, `Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.`)
-	rootCmd.Flags().IntVarP(&n, "", "n", 1, `How many completions to generate for each prompt. Note: Because this parameter generates many completions, it can quickly consume your token quota. Use carefully and ensure that you have reasonable settings for max_tokens and stop.`)
-	// rootCmd.MarkFlagRequired("api-key")
-	// Get the API key from the CHAT_GPT_API_KEY environment variable
-	apiKey = os.Getenv("CHAT_GPT_API_KEY")
-	if apiKey == "" {
-		log.Fatal("Please set the CHAT_GPT_API_KEY environment variable")
-	}
+	rootCmd.Flags().IntVarP(&maxTokens, "max-tokens", "m", 2048, `The maximum number of tokens to generate in the completion. 
+The token count of your prompt plus max_tokens cannot exceed the model's context length. Max 4096.`)
+	rootCmd.Flags().Float32VarP(&temperature, "temperature", "t", 0.1, `What sampling temperature to use. 
+Higher values means the model will take more risks. 
+Try 0.9 for more creative applications, and 0 (argmax sampling) for ones with a well-defined answer.`)
+	rootCmd.Flags().Float32VarP(&frequencyPenalty, "frequency-penalty", "f", 0, `Number between -2.0 and 2.0. 
+Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.`)
+	rootCmd.Flags().Float32VarP(&presencePenalty, "presence-penalty", "p", 0, `Number between -2.0 and 2.0. 
+Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.`)
+	rootCmd.Flags().IntVarP(&n, "", "n", 1, `How many completions to generate for each prompt. 
+Note: Because this parameter generates many completions, it can quickly consume your token quota. 
+Use carefully and ensure that you have reasonable settings for max_tokens and stop.`)
 
 	if err := rootCmd.Execute(); err != nil {
 		log.Fatal(err)
