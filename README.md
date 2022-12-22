@@ -33,6 +33,16 @@ CHAT_GPT_API_KEY="XXXXX" chat-gpt-cli "enter here your question"
 
 The program will send the provided string argument to GPT-3 and print the response to the command line.
 
+### Flags 
+
+| Short   |     Long      |  Description |
+|:----------|:-------------|:------|
+|  -n | -- int                       |  How many completions to generate for each prompt. Note: Because this parameter generates many completions, it can quickly consume your token quota. Use carefully and ensure that you have reasonable settings for max_tokens and stop. (default 1) |
+|  -t | --temperature        |  What sampling temperature to use. Higher values means the model will take more risks.  Try 0.9 for more creative applications, and 0 (argmax sampling) for ones with a well-defined answer. (default 0.1) |
+|  -f | --frequency-penalty |  Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim. |
+|  -m | --max-tokens int             |  The maximum number of tokens to generate in the completion. The token count of your prompt plus max_tokens cannot exceed the model's context length. Max 4096. (default 2048)   |
+|  -p | --presence-penalty   |  Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim. |
+
 ## TODOs
 
 - allow to continue chat via a `-c` flag
