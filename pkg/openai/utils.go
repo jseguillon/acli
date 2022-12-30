@@ -6,7 +6,7 @@ import (
 )
 
 // makeQuery constructs a JSON object for the POST request to the OpenAI API
-func OpenAIQuery(text string, maxTokens int, temperature float32, frequencyPenalty float32, presencePenalty float32, n int) []byte {
+func OpenAIQuery(text string, maxTokens int, temperature float32, frequencyPenalty float32, presencePenalty float32, n int, model string) []byte {
 	// GPTConfig contains the default settings for the GPT API request.
 	type GPTConfig struct {
 		Model            string  `json:"model"`
@@ -21,7 +21,7 @@ func OpenAIQuery(text string, maxTokens int, temperature float32, frequencyPenal
 
 	// Marshal the JSON object into a byte array
 	query := &GPTConfig{
-		Model:            "text-davinci-003",
+		Model:            model,
 		Prompt:           text,
 		MaxTokens:        maxTokens,
 		Temperature:      temperature,
