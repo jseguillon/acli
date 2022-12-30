@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -23,7 +24,7 @@ func main() {
 	var frequencyPenalty float32
 	var presencePenalty float32
 	var n int
-
+	var prompt string
 	// Define the root command
 	var rootCmd = &cobra.Command{
 		Use:   "gpt-chat",
@@ -53,12 +54,18 @@ func main() {
 			if presencePenalty < -2.0 || presencePenalty > 2.0 {
 				log.Fatal("Please provide a presence penalty between -2.0 and 2.0")
 			}
-			// Ensure prompt max_tokens is not more than 4096
-			maxTokensWithPrompt := 4096 - len(text)
-			if maxTokensWithPrompt < 4096 {
-				maxTokens = maxTokensWithPrompt
-				if maxTokens < 0 {
-					log.Fatal("Error prompt is too long. Model max token is 4096 but you provided a prompt of length: ", len(text))
+			// Promt named 'fix' has some specific requirements
+			if prompt != "" && prompt == "fix" {
+				text = fmt.Sprintf("Fix given command with error. Answer shell command that can be piped. \\n\\nCommand: \"%s\" with error %s \\nFixed command, no leading #: ", args[0], args[1])
+				maxTokens = 256
+				temperature = 0.1
+			} else { // Ensure prompt max_tokens is not more than 4096
+				maxTokensWithPrompt := 4096 - len(text)
+				if maxTokensWithPrompt < 4096 {
+					maxTokens = maxTokensWithPrompt
+					if maxTokens < 0 {
+						log.Fatal("Error prompt is too long. Model max token is 4096 but you provided a prompt of length: ", len(text))
+					}
 				}
 			}
 
@@ -107,14 +114,22 @@ func main() {
 				log.Fatal("Error ", resp.StatusCode, string(body[:]))
 			}
 
-			// Print the response
-			for _, c := range obj.Choices {
-				fmt.Print(strings.TrimPrefix(c.Text, "\n"))
-				if n > 1 {
-					fmt.Println("")
-					fmt.Println("\n---------------------")
-				} else {
-					fmt.Println("")
+			if prompt != "" && prompt == "fix" {
+				fmt.Fprint(os.Stderr, strings.TrimLeft(obj.Choices[0].Text, "\n"))
+				fmt.Fprintln(os.Stderr, " [^C to escape or Enter to run ]")
+				reader := bufio.NewReader(os.Stdin)
+				reader.ReadString('\n')
+				fmt.Println(strings.TrimLeft(obj.Choices[0].Text, "\n"))
+			} else {
+				// Print the response
+				for _, c := range obj.Choices {
+					fmt.Print(strings.TrimPrefix(c.Text, "\n"))
+					if n > 1 {
+						fmt.Println("")
+						fmt.Println("\n---------------------")
+					} else {
+						fmt.Println("")
+					}
 				}
 			}
 		},
@@ -133,6 +148,7 @@ Positive values penalize new tokens based on their existing frequency in the tex
 	rootCmd.Flags().IntVarP(&n, "", "n", 1, `How many completions to generate for each prompt. 
 Note: Because this parameter generates many completions, it can quickly consume your token quota. 
 Use carefully and ensure that you have reasonable settings for max_tokens and stop.`)
+	rootCmd.Flags().StringVarP(&prompt, "prompt", "", "", `Run pre-recorded prompt. Currently, only 'fix' prompt is available`)
 
 	// Parse the command-line arguments
 	if err := rootCmd.Execute(); err != nil {
