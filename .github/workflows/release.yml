@@ -20,9 +20,10 @@ jobs:
         with:
           go-version: '1.19.4'
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v2.5.2
+        uses: golangci/golangci-lint-action@v3
         with:
           version: latest
+          working-directory: cmd
   # TODO: tests
   # test:
   #   name: Run tests
@@ -70,7 +71,7 @@ jobs:
           echo "GOARCH=$GOARCH" >> $GITHUB_ENV
       - name: Build
         run: |
-          go build -o "$BINARY_NAME" -v
+          go build -o "$BINARY_NAME" -v ./cmd/
       - name: Release Notes
         run:
           git log $(git describe HEAD~ --tags --abbrev=0)..HEAD --pretty='format:* %h %s%n  * %an <%ae>' --no-merges >> ".github/RELEASE-TEMPLATE.md"
