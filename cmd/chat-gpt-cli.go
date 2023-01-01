@@ -23,6 +23,7 @@ func main() {
 	var frequencyPenalty float32
 	var presencePenalty float32
 	var n int
+	var model string
 
 	// Define the root command
 	var rootCmd = &cobra.Command{
@@ -53,6 +54,9 @@ func main() {
 			if presencePenalty < -2.0 || presencePenalty > 2.0 {
 				log.Fatal("Please provide a presence penalty between -2.0 and 2.0")
 			}
+
+			//FIXME : creat specific max token compute depending of model given
+
 			// Ensure prompt max_tokens is not more than 4096
 			maxTokensWithPrompt := 4096 - len(text)
 			if maxTokensWithPrompt < 4096 {
@@ -64,7 +68,7 @@ func main() {
 
 			// Create a new HTTP client
 			client := &http.Client{}
-			jsonData := o.OpenAIQuery(text, maxTokens, temperature, frequencyPenalty, presencePenalty, n)
+			jsonData := o.OpenAIQuery(text, maxTokens, temperature, frequencyPenalty, presencePenalty, n, model)
 
 			// Build the request
 			req, err := http.NewRequest("POST", "https://api.openai.com/v1/completions", bytes.NewBuffer(jsonData))
@@ -130,9 +134,14 @@ Try 0.9 for more creative applications, and 0 (argmax sampling) for ones with a 
 Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.`)
 	rootCmd.Flags().Float32VarP(&presencePenalty, "presence-penalty", "p", 0, `Number between -2.0 and 2.0. 
 Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.`)
-	rootCmd.Flags().IntVarP(&n, "", "n", 1, `How many completions to generate for each prompt. 
+	rootCmd.Flags().IntVarP(&n, "choices", "n", 1, `How many completions to generate for each prompt. 
 Note: Because this parameter generates many completions, it can quickly consume your token quota. 
 Use carefully and ensure that you have reasonable settings for max_tokens and stop.`)
+	rootCmd.Flags().StringVarP(&model, "model", "", "text-davinci-003", `Open AI model to use. Some examples:
+- text-davinci-003: most capable GPT-3 model,
+- code-davinci-002: most capable Codex model. Particularly good at translating natural language to code,
+- text-curie-001: very capable, but faster and lower cost than Davinci. 
+(See https://beta.openai.com/docs/models/ for more)`)
 
 	// Parse the command-line arguments
 	if err := rootCmd.Execute(); err != nil {

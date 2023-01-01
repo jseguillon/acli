@@ -37,12 +37,12 @@ The program will send the provided string argument to GPT-3 and print the respon
 
 | Short   |     Long      |  Description |
 |:----------|:-------------|:------|
-|  -n | -- int                       |  How many completions to generate for each prompt. Note: Because this parameter generates many completions, it can quickly consume your token quota. Use carefully and ensure that you have reasonable settings for max_tokens and stop. (default 1) |
-|  -t | --temperature        |  What sampling temperature to use. Higher values means the model will take more risks.  Try 0.9 for more creative applications, and 0 (argmax sampling) for ones with a well-defined answer. (default 0.1) |
+|  -n | --choices          |  How many completions to generate for each prompt. Note: Because this parameter generates many completions, it can quickly consume your token quota. Use carefully and ensure that you have reasonable settings for max_tokens and stop. (default 1) |
+|  -t | --temperature       |  What sampling temperature to use. Higher values means the model will take more risks.  Try 0.9 for more creative applications, and 0 (argmax sampling) for ones with a well-defined answer. (default 0.1) |
 |  -f | --frequency-penalty |  Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim. |
-|  -m | --max-tokens int             |  The maximum number of tokens to generate in the completion. The token count of your prompt plus max_tokens cannot exceed the model's context length. Max 4096. (default 2048)   |
+|  -m | --max-tokens        |  The maximum number of tokens to generate in the completion. The token count of your prompt plus max_tokens cannot exceed the model's context length. Max 4096. (default 2048)   |
 |  -p | --presence-penalty   |  Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim. |
-
+|     | --model |  Open AI model to use. Some examples:<br/> - text-davinci-003: most capable GPT-3 model, <br/>- code-davinci-002: most capable Codex model. Particularly good at translating natural language to code, <br/>- text-curie-001: very capable, but faster and lower cost than Davinci. <br/> (See https://beta.openai.com/docs/models/ for more) (default "text-davinci-003") | 
 ## TODOs
 
 - allow to continue chat via a `-c` flag
