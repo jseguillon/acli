@@ -55,15 +55,8 @@ func main() {
 				log.Fatal("Please provide a presence penalty between -2.0 and 2.0")
 			}
 
-			//FIXME : creat specific max token compute depending of model given
-
-			// Ensure prompt max_tokens is not more than 4096
-			maxTokensWithPrompt := 4096 - len(text)
-			if maxTokensWithPrompt < 4096 {
-				maxTokens = maxTokensWithPrompt
-				if maxTokens < 0 {
-					log.Fatal("Error prompt is too long. Model max token is 4096 but you provided a prompt of length: ", len(text))
-				}
+			if !cmd.Flags().Changed("max-tokens") {
+				maxTokens = o.GetModelsDefaultToken(model, text)
 			}
 
 			// Create a new HTTP client
@@ -125,8 +118,9 @@ func main() {
 	}
 
 	// Define command-line flags
-	rootCmd.Flags().IntVarP(&maxTokens, "max-tokens", "m", 2048, `The maximum number of tokens to generate in the completion. 
-The token count of your prompt plus max_tokens cannot exceed the model's context length. Max 4096.`)
+	rootCmd.Flags().IntVarP(&maxTokens, "max-tokens", "m", -1, `The maximum number of tokens to generate in the completion. 
+Defaults to model max-tokens minus prompt lenght.
+Models max: text-davinci-003=4000, text-curie-001=2048, code-davinci-002=8000, text-babbage-001=2048, code-cushman-001=2048"`)
 	rootCmd.Flags().Float32VarP(&temperature, "temperature", "t", 0.1, `What sampling temperature to use. 
 Higher values means the model will take more risks. 
 Try 0.9 for more creative applications, and 0 (argmax sampling) for ones with a well-defined answer.`)
