@@ -66,8 +66,10 @@ func main() {
 				model = "text-davinci-003"
 				jsonData = o.OpenAIQuery(text, maxTokens, temperature, frequencyPenalty, presencePenalty, n, model)
 
-			} else if !cmd.Flags().Changed("max-tokens") {
-				maxTokens = o.GetModelsDefaultToken(model, text)
+			} else {
+				if !cmd.Flags().Changed("max-tokens") {
+					maxTokens = o.GetModelsDefaultToken(model, text)
+				}
 				jsonData = o.OpenAIQuery(text, maxTokens, temperature, frequencyPenalty, presencePenalty, n, model)
 			}
 
