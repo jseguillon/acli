@@ -1,4 +1,4 @@
-module github.com/jseguillon/chat-gpt-cli
+module github.com/jseguillon/acli
 
 go 1.19
 
