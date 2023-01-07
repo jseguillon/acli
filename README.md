@@ -1,30 +1,29 @@
-# chat-gpt-cli
-
-A command line interface for interacting with openAI's AI models.
+# Chat-GPT-CLI
+A command line interface for interacting with OpenAI's AI models.
 
 ## Requirements
 
-### Get open API key
+### Get Open API Key
 
-Sign up for an open API account on their website: https://openai.com/api/. After signing in, create an API key at this URL: https://beta.openai.com/account/api-keys. 
+Sign up for an Open API account on their website: https://openai.com/api/. After signing in, create an API key at this URL: https://beta.openai.com/account/api-keys. 
 
 ## Usage
 
 Use `chat-gpt-cli` for discussions or complex task solving. Examples: 
-* `   chat-gpt-cli "can GPT help me for daily command line tasks ?" `
-* `   chat-gpt-cli "[complex description of feature request for bash/javascript/python/etc...]" `
+* `chat-gpt-cli "Can GPT help me for daily command line tasks?"`
+* `chat-gpt-cli "[Complex description of feature request for bash/javascript/python/etc...]"`
 
 Use `howto` function for quick one liner answers and interactive mode. Examples:
-* `   howto openssl test SSL expiracy of github.com`
-* `   howto "find all files more than 30Mb "`
+* `howto openssl test SSL expiracy of github.com`
+* `howto "find all files more than 30Mb"`
 
 Use `fix` for quick fixing typos. Examples:
-* [run typo command like 'rrm', 'lls', 'cd..', etc..]
-* then type `fix` and get fixed command ready to run
+* [Run typo command like 'rrm', 'lls', 'cd..', etc..]
+* Then type `fix` and get fixed command ready to run
 
 ## Install
 
-### Script install
+### Script Install
 
 Run:
 ```
@@ -32,7 +31,7 @@ curl -sSLO https://raw.githubusercontent.com/jseguillon/chat-gpt-cli/main/get.sh
 bash get.sh
 ```
 
-### Or manual install
+### Or Manual Install
 
 Go to [releases page](https://github.com/jseguillon/chat-gpt-cli/releases), find appropriate binary for your system. Download, install where you want and `chmod +x` it. Example: 
 
