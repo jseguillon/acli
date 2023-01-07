@@ -1,12 +1,38 @@
 # chat-gpt-cli
 
-A command line interface for chatting with the OpenAI GPT-3 language model.
+A command line interface for interacting with openAI's AI models.
 
 ## Requirements
 
-- An OpenAI API key with access to the GPT-3 model, set as the `CHAT_GPT_API_KEY` environment variable
+### Get open API key
+
+Sign up for an open API account on their website: https://openai.com/api/. After signing in, create an API key at this URL: https://beta.openai.com/account/api-keys. 
+
+## Usage
+
+Use `chat-gpt-cli` for discussions or complex task solving. Examples: 
+* `   chat-gpt-cli "can GPT help me for daily command line tasks ?" `
+* `   chat-gpt-cli "[complex description of feature request for bash/javascript/python/etc...]" `
+
+Use `howto` function for quick one liner answers and interactive mode. Examples:
+* `   howto openssl test SSL expiracy of github.com`
+* `   howto "find all files more than 30Mb "`
+
+Use `fix` for quick fixing typos. Examples:
+* [run typo command like 'rrm', 'lls', 'cd..', etc..]
+* then type `fix` and get fixed command ready to run
 
 ## Install
+
+### Script install
+
+Run:
+```
+curl -sSLO https://raw.githubusercontent.com/jseguillon/chat-gpt-cli/main/get.sh && \
+bash get.sh
+```
+
+### Or manual install
 
 Go to [releases page](https://github.com/jseguillon/chat-gpt-cli/releases), find appropriate binary for your system. Download, install where you want and `chmod +x` it. Example: 
 
@@ -15,23 +41,14 @@ sudo curl -SL [release_url] -o /usr/local/bin/chat-gpt-cli
 sudo chmod +x /usr/local/bin/chat-gpt-cli
 ```
 
-
-## Usage
-
-### Get open API key
-
-Sign up for an open API account on their website: https://openai.com/api/. After creating an account and signing in, you can create an API key by clicking on your user name in the top right corner, then selecting "API Keys" from the dropdown menu. Click on the "New API Key" button to create a new API key and copy it to your clipboard. 
-
-
-### Run
-
-Set your API key via the `CHAT_GPT_API_KEY` environnement variable, then run `chat-gpt-cli`:
+Add configuration in any `.rc` file you want:
 
 ```
-CHAT_GPT_API_KEY="XXXXX" chat-gpt-cli "enter here your question"
-```
+CHAT_GPT_API_KEY="XXXXX"
 
-The program will send the provided string argument to GPT-3 and print the response to the command line.
+alias fix='eval $(chat-gpt-cli --script fixCmd "$(fc -nl -1)" $?)'
+howto() { h="$@"; eval $(chat-gpt-cli --script howCmd "$h") ; }
+```
 
 ### Flags 
 
@@ -44,19 +61,9 @@ The program will send the provided string argument to GPT-3 and print the respon
 |  -p | --presence-penalty   |  Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim. |
 |     | --model |  Open AI model to use. Some examples:<br/> - text-davinci-003: most capable GPT-3 model, <br/>- code-davinci-002: most capable Codex model. Particularly good at translating natural language to code, <br/>- text-curie-001: very capable, but faster and lower cost than Davinci. <br/> (See https://beta.openai.com/docs/models/ for more) (default "text-davinci-003") | 
 
-### Alias and fucntion
-
-TODO: add demos
-
-```
-alias fix='eval $(chat-gpt-cli --script fixCmd "$(fc -nl -1)" $?)'
-
-how() { h="$@"; eval $(chat-gpt-cli --script howCmd "$h") ; }
-```
-
 ## TODOs
 
-- allow to continue chat via a `-c` flag
+- allow to continue chat via a `-c` flag when openAI offers this feature on its API
 - add tests 
 
 ## License
