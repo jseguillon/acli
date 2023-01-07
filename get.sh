@@ -13,33 +13,24 @@ shell_install_func() {
 
 shell_install_config() {
     if [ -f $1 ]; then
-        set +e; ask "Add default configuration in $1"; ret="$?"; set -e
+        set +e; ask "Add OpenAI api key in $1 "; ret="$?"; set -e
         if [ $ret -eq 1 ]; then
-            echo "$INSTALL_SH_KEY" >> $1
+            if [ "$openAi_key" == "" ]; then
+                read -p "OpenAI api key ? (get yours at https://beta.openai.com/account/api-keys) : " -r
+                if [ ! $REPLY == "" ]; then openAi_key=$REPLY; else echo "No key given, skipping key installation..."; return; fi
+            fi
+            echo "CHAT_GPT_API_KEY=$openAi_key" >> $1
         fi
     fi
 }
 
 shell_install() {
-echo
-echo "chat-gpt-cli aliases and functions:"
-echo "\`\`\`"
-echo "$INSTALL_SH_FUNC"
-echo "\`\`\`"
-echo
-
 files=($HOME/.bashrc $HOME/.zshrc)
 for file in ${files[@]}; do
     shell_install_func $file
 done
 
-echo 
-echo 
-echo "Default chat-gpt-cli configuration:"
-echo "\`\`\`"
-echo "$INSTALL_SH_KEY"
-echo "\`\`\`"
-echo
+openAi_key=""
 
 files=($HOME/.bashrc $HOME/.zshrc)
 for file in ${files[@]}; do
@@ -101,9 +92,6 @@ sudo curl -sSL $url -o $dest
 sudo chmod +x $dest
 
 set +e
-read -r -d '' INSTALL_SH_KEY <<'EOF'
-CHAT_GPT_API_KEY="[Get your key at: https://beta.openai.com/account/api-keys]"
-EOF
 read -r -d '' INSTALL_SH_FUNC <<'EOF'
 alias fix='eval $(chat-gpt-cli --script fixCmd "$(fc -nl -1)" $?)'
 howto() { h="$@"; eval $(chat-gpt-cli --script howCmd "$h") ; }
@@ -122,7 +110,7 @@ echo "# Sample usage:"
 echo
 echo "* use 'chat-gpt-cli' for discussions or complex task solving: "
 echo '     > chat-gpt-cli "can GPT help me for daily command line tasks ?"'
-echo '     > chat-gpt-cli "[very complex script description for bash/javascript/python/etc...]"'
+echo '     > chat-gpt-cli "[complex description of feature request for bash/javascript/python/etc...]"'
 echo
 echo "* use 'howto' function for quick one liner answers and interactive mode: "
 echo '    > howto openssl test SSL expiracy of github.com'
