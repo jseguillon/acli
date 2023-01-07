@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	o "pkg/openai"
+	s "pkg/scripts"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -24,6 +25,8 @@ func main() {
 	var presencePenalty float32
 	var n int
 	var model string
+	var script string
+	var jsonData []byte
 
 	// Define the root command
 	var rootCmd = &cobra.Command{
@@ -55,13 +58,29 @@ func main() {
 				log.Fatal("Please provide a presence penalty between -2.0 and 2.0")
 			}
 
-			if !cmd.Flags().Changed("max-tokens") {
-				maxTokens = o.GetModelsDefaultToken(model, text)
+			if script != "" {
+				if script == "fixCmd" {
+					text = s.GetScriptFixCmdQueryPrompt(text, args[0], args[1])
+					if !cmd.Flags().Changed("max-tokens") {
+						maxTokens = s.GetScriptFixCmdDefaultTokens()
+					}
+				} else if script == "howCmd" {
+					text = s.GetScriptHowCmdQueryPrompt(text, args[0])
+					if !cmd.Flags().Changed("max-tokens") {
+						maxTokens = s.GetScriptHowCmdDefaultTokens()
+					}
+				}
+				model = "text-davinci-003"
+				jsonData = o.OpenAIQuery(text, maxTokens, temperature, frequencyPenalty, presencePenalty, n, model)
+			} else {
+				if !cmd.Flags().Changed("max-tokens") {
+					maxTokens = o.GetModelsDefaultToken(model, text)
+				}
+				jsonData = o.OpenAIQuery(text, maxTokens, temperature, frequencyPenalty, presencePenalty, n, model)
 			}
 
 			// Create a new HTTP client
 			client := &http.Client{}
-			jsonData := o.OpenAIQuery(text, maxTokens, temperature, frequencyPenalty, presencePenalty, n, model)
 
 			// Build the request
 			req, err := http.NewRequest("POST", "https://api.openai.com/v1/completions", bytes.NewBuffer(jsonData))
@@ -104,14 +123,18 @@ func main() {
 				log.Fatal("Error ", resp.StatusCode, string(body[:]))
 			}
 
-			// Print the response
-			for _, c := range obj.Choices {
-				fmt.Print(strings.TrimPrefix(c.Text, "\n"))
-				if n > 1 {
-					fmt.Println("")
-					fmt.Println("\n---------------------")
-				} else {
-					fmt.Println("")
+			if script != "" {
+				s.RunScript(obj.Choices[0].Text)
+			} else {
+				// Print the response
+				for _, c := range obj.Choices {
+					fmt.Print(strings.TrimPrefix(c.Text, "\n"))
+					if n > 1 {
+						fmt.Println("")
+						fmt.Println("\n---------------------")
+					} else {
+						fmt.Println("")
+					}
 				}
 			}
 		},
@@ -136,6 +159,8 @@ Use carefully and ensure that you have reasonable settings for max_tokens and st
 - code-davinci-002: most capable Codex model. Particularly good at translating natural language to code,
 - text-curie-001: very capable, but faster and lower cost than Davinci. 
 (See https://beta.openai.com/docs/models/ for more)`)
+	rootCmd.Flags().StringVarP(&script, "script", "", "", `Run pre-recorded script. Currently, only 'fixCmd' script is available. 
+Install whith: alias fix='$(./chat-gpt-cli --script fixCmd "$(fc -nl -1)" $?)'`)
 
 	// Parse the command-line arguments
 	if err := rootCmd.Execute(); err != nil {

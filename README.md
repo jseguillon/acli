@@ -43,6 +43,17 @@ The program will send the provided string argument to GPT-3 and print the respon
 |  -m | --max-tokens        |  Defaults to model max-tokens minus prompt lenght. <br/> Models max: text-davinci-003=4000, text-curie-001=2048, code-davinci-002=8000, text-babbage-001=2048, code-cushman-001=2048  |
 |  -p | --presence-penalty   |  Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim. |
 |     | --model |  Open AI model to use. Some examples:<br/> - text-davinci-003: most capable GPT-3 model, <br/>- code-davinci-002: most capable Codex model. Particularly good at translating natural language to code, <br/>- text-curie-001: very capable, but faster and lower cost than Davinci. <br/> (See https://beta.openai.com/docs/models/ for more) (default "text-davinci-003") | 
+
+### Alias and fucntion
+
+TODO: add demos
+
+```
+alias fix='eval $(chat-gpt-cli --script fixCmd "$(fc -nl -1)" $?)'
+
+how() { h="$@"; eval $(chat-gpt-cli --script howCmd "$h") ; }
+```
+
 ## TODOs
 
 - allow to continue chat via a `-c` flag
