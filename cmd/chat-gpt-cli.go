@@ -58,14 +58,20 @@ func main() {
 				log.Fatal("Please provide a presence penalty between -2.0 and 2.0")
 			}
 
-			if script != "" && script == "fixCmd" {
-				text = s.GetScriptFixCmdQueryPrompt(text, args[0], args[1])
-				if !cmd.Flags().Changed("max-tokens") {
-					maxTokens = s.GetScriptFixCmdDefaultTokens()
+			if script != "" {
+				if script == "fixCmd" {
+					text = s.GetScriptFixCmdQueryPrompt(text, args[0], args[1])
+					if !cmd.Flags().Changed("max-tokens") {
+						maxTokens = s.GetScriptFixCmdDefaultTokens()
+					}
+				} else if script == "howCmd" {
+					text = s.GetScriptHowCmdQueryPrompt(text, args[0])
+					if !cmd.Flags().Changed("max-tokens") {
+						maxTokens = s.GetScriptHowCmdDefaultTokens()
+					}
 				}
 				model = "text-davinci-003"
 				jsonData = o.OpenAIQuery(text, maxTokens, temperature, frequencyPenalty, presencePenalty, n, model)
-
 			} else {
 				if !cmd.Flags().Changed("max-tokens") {
 					maxTokens = o.GetModelsDefaultToken(model, text)
@@ -117,8 +123,8 @@ func main() {
 				log.Fatal("Error ", resp.StatusCode, string(body[:]))
 			}
 
-			if script != "" && script == "fixCmd" {
-				s.RunFix(obj.Choices[0].Text)
+			if script != "" {
+				s.RunScript(obj.Choices[0].Text)
 			} else {
 				// Print the response
 				for _, c := range obj.Choices {
