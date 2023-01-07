@@ -1,6 +1,6 @@
 #!/usr/bin/env bash 
 set -e
-export VERSION=$(curl -s https://api.github.com/repos/jseguillon/chat-gpt-cli/releases | grep tag_name | grep -v -- '-rc' | sort -r | head -1 | awk -F': ' '{print $2}' | sed 's/,//' | xargs)
+export VERSION=$(curl -s https://api.github.com/repos/jseguillon/acli/releases | grep tag_name | grep -v -- '-rc' | sort -r | head -1 | awk -F': ' '{print $2}' | sed 's/,//' | xargs)
 
 shell_install_func() {
     if [ -f $1 ]; then
@@ -85,16 +85,16 @@ read -p "($install_dir) : " -r
 if [ ! $REPLY == "" ]; then install_dir="$REPLY"; fi
 echo $install_dir
 
-url="https://github.com/jseguillon/chat-gpt-cli/releases/download/$VERSION/chat-gpt-cli-$os-$architecture"
-dest="$install_dir/chat-gpt-cli"
-echo "Dowloading $url into $install_dir/chat-gpt-cli"
+url="https://github.com/jseguillon/acli/releases/download/$VERSION/acli-$os-$architecture"
+dest="$install_dir/acli"
+echo "Dowloading $url into $install_dir/acli"
 sudo curl -sSL $url -o $dest
 sudo chmod +x $dest
 
 set +e
 read -r -d '' INSTALL_SH_FUNC <<'EOF'
-alias fix='eval $(chat-gpt-cli --script fixCmd "$(fc -nl -1)" $?)'
-howto() { h="$@"; eval $(chat-gpt-cli --script howCmd "$h") ; }
+alias fix='eval $(acli --script fixCmd "$(fc -nl -1)" $?)'
+howto() { h="$@"; eval $(acli --script howCmd "$h") ; }
 EOF
 set -e
 
@@ -108,9 +108,9 @@ echo
 
 echo "# Sample usage:"
 echo
-echo "* use 'chat-gpt-cli' for discussions or complex task solving: "
-echo '     > chat-gpt-cli "can GPT help me for daily command line tasks ?"'
-echo '     > chat-gpt-cli "[complex description of feature request for bash/javascript/python/etc...]"'
+echo "* use 'acli' for discussions or complex task solving: "
+echo '     > acli "can GPT help me for daily command line tasks ?"'
+echo '     > acli "[complex description of feature request for bash/javascript/python/etc...]"'
 echo
 echo "* use 'howto' function for quick one liner answers and interactive mode: "
 echo '    > howto openssl test SSL expiracy of github.com'
