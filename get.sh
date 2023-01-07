@@ -85,9 +85,9 @@ read -p "($install_dir) : " -r
 if [ ! $REPLY == "" ]; then install_dir="$REPLY"; fi
 echo $install_dir
 
-echo "Dowloading $url into $install_dir/chat-gpt-cli"
 url="https://github.com/jseguillon/chat-gpt-cli/releases/download/$VERSION/chat-gpt-cli-$os-$architecture"
 dest="$install_dir/chat-gpt-cli"
+echo "Dowloading $url into $install_dir/chat-gpt-cli"
 sudo curl -sSL $url -o $dest
 sudo chmod +x $dest
 
