@@ -1,4 +1,4 @@
-# Chat-GPT-CLI
+# acli
 A command line interface for interacting with OpenAI's AI models.
 
 ## Requirements
@@ -9,9 +9,9 @@ Sign up for an Open API account on their website: https://openai.com/api/. After
 
 ## Usage
 
-Use `chat-gpt-cli` for discussions or complex task solving. Examples: 
-* `chat-gpt-cli "Can GPT help me for daily command line tasks?"`
-* `chat-gpt-cli "[Complex description of feature request for bash/javascript/python/etc...]"`
+Use `acli` for discussions or complex task solving. Examples: 
+* `acli "Can GPT help me for daily command line tasks?"`
+* `acli "[Complex description of feature request for bash/javascript/python/etc...]"`
 
 Use `howto` function for quick one liner answers and interactive mode. Examples:
 * `howto openssl test SSL expiracy of github.com`
@@ -27,17 +27,17 @@ Use `fix` for quick fixing typos. Examples:
 
 Run:
 ```
-curl -sSLO https://raw.githubusercontent.com/jseguillon/chat-gpt-cli/main/get.sh && \
+curl -sSLO https://raw.githubusercontent.com/jseguillon/acli/main/get.sh && \
 bash get.sh
 ```
 
 ### Or Manual Install
 
-Go to [releases page](https://github.com/jseguillon/chat-gpt-cli/releases), find appropriate binary for your system. Download, install where you want and `chmod +x` it. Example: 
+Go to [releases page](https://github.com/jseguillon/acli/releases), find appropriate binary for your system. Download, install where you want and `chmod +x` it. Example: 
 
 ```
-sudo curl -SL [release_url] -o /usr/local/bin/chat-gpt-cli
-sudo chmod +x /usr/local/bin/chat-gpt-cli
+sudo curl -SL [release_url] -o /usr/local/bin/acli
+sudo chmod +x /usr/local/bin/acli
 ```
 
 Add configuration in any `.rc` file you want:
@@ -45,8 +45,8 @@ Add configuration in any `.rc` file you want:
 ```
 CHAT_GPT_API_KEY="XXXXX"
 
-alias fix='eval $(chat-gpt-cli --script fixCmd "$(fc -nl -1)" $?)'
-howto() { h="$@"; eval $(chat-gpt-cli --script howCmd "$h") ; }
+alias fix='eval $(acli --script fixCmd "$(fc -nl -1)" $?)'
+howto() { h="$@"; eval $(acli --script howCmd "$h") ; }
 ```
 
 ### Flags 

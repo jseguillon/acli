@@ -41,7 +41,7 @@ func main() {
 
 			// Get the string argument to send to GPT chat
 			if len(args) < 1 {
-				log.Fatal("Please provide a string argument to send to GPT chat")
+				log.Fatal("Please provide a string argument to send")
 			}
 			text = args[0]
 
@@ -160,7 +160,7 @@ Use carefully and ensure that you have reasonable settings for max_tokens and st
 - text-curie-001: very capable, but faster and lower cost than Davinci. 
 (See https://beta.openai.com/docs/models/ for more)`)
 	rootCmd.Flags().StringVarP(&script, "script", "", "", `Run pre-recorded script. Currently, only 'fixCmd' script is available. 
-Install whith: alias fix='$(./chat-gpt-cli --script fixCmd "$(fc -nl -1)" $?)'`)
+Install whith: alias fix='$(./acli --script fixCmd "$(fc -nl -1)" $?)'`)
 
 	// Parse the command-line arguments
 	if err := rootCmd.Execute(); err != nil {
