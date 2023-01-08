@@ -1,25 +1,13 @@
 # acli
 A command line interface for interacting with OpenAI's AI models.
 
+[![asciicast](https://asciinema.org/a/550368.svg)](https://asciinema.org/a/550368)
+
 ## Requirements
 
 ### Get Open API Key
 
 Sign up for an Open API account on their website: https://openai.com/api/. After signing in, create an API key at this URL: https://beta.openai.com/account/api-keys. 
-
-## Usage
-
-Use `acli` for discussions or complex task solving. Examples: 
-* `acli "Can GPT help me for daily command line tasks?"`
-* `acli "[Complex description of feature request for bash/javascript/python/etc...]"`
-
-Use `howto` function for quick one liner answers and interactive mode. Examples:
-* `howto openssl test SSL expiracy of github.com`
-* `howto "find all files more than 30Mb"`
-
-Use `fix` for quick fixing typos. Examples:
-* [Run typo command like 'rrm', 'lls', 'cd..', etc..]
-* Then type `fix` and get fixed command ready to run
 
 ## Install
 
@@ -48,6 +36,20 @@ CHAT_GPT_API_KEY="XXXXX"
 alias fix='eval $(acli --script fixCmd "$(fc -nl -1)" $?)'
 howto() { h="$@"; eval $(acli --script howCmd "$h") ; }
 ```
+
+## Usage
+
+Use `acli` for discussions or complex task solving. Examples: 
+* `acli "Can GPT help me for daily command line tasks?"`
+* `acli "[Complex description of feature request for bash/javascript/python/etc...]"`
+
+Use `howto` function for quick one liner answers and interactive mode. Examples:
+* `howto openssl test SSL expiracy of github.com`
+* `howto "find all files more than 30Mb"`
+
+Use `fix` for quick fixing typos. Examples:
+* [Run typo command like 'rrm', 'lls', 'cd..', etc..]
+* Then type `fix` and get fixed command ready to run
 
 ### Flags 
 
