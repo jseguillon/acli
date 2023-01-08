@@ -1,5 +1,5 @@
 # acli
-A command line interface for interacting with OpenAI's AI models.
+Assisted command line interface powered by OpenAI's API.
 
 [![asciicast](https://asciinema.org/a/550368.svg)](https://asciinema.org/a/550368)
 

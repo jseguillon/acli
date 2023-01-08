@@ -1,5 +1,5 @@
 # acli
-Une interface en ligne de commande pour interagir avec les modèles IA d'OpenAI.
+Une interface en ligne de commande assistée grâce aux APIs de Open AI.
 
 [![asciicast](https://asciinema.org/a/550368.svg)](https://asciinema.org/a/550368)
 
