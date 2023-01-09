@@ -100,11 +100,6 @@ echo
 echo "# Configure"
 shell_install
 
-if [ ! "$openAi_key" == "" ]; then export ACLI_OPENAI_KEY=$openAi_key; fi
-
-alias fix='eval $(acli --script fixCmd "$(fc -nl -1)" $?)'
-howto() { h="$@"; eval $(acli --script howCmd "$h") ; }
-
 echo "Installation done."
 echo 
 echo
@@ -123,6 +118,8 @@ echo "* use 'fix' for quick fixing typos: "
 echo "    [run typo command like 'rrm', 'lls', 'cd..', etc..]"
 echo "    then type 'fix' and get fixed command ready to run"
 echo 
-
+echo
 echo "If you like, please give a star on github.com or follow @Jseguillon on Twitter. Thanks."
+echo
+echo "Please start a new shell before playing with acli."
 echo
