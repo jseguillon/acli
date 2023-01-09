@@ -15,11 +15,7 @@ shell_install_config() {
     if [ -f $1 ]; then
         set +e; ask "Add OpenAI api key in $1 "; ret="$?"; set -e
         if [ $ret -eq 1 ]; then
-            if [ "$openAi_key" == "" ]; then
-                read -p "OpenAI api key ? (get yours at https://beta.openai.com/account/api-keys) : " -r
-                if [ ! $REPLY == "" ]; then openAi_key=$REPLY; else echo "No key given, skipping key installation..."; return; fi
-            fi
-            echo "CHAT_GPT_API_KEY=$openAi_key" >> $1
+            echo "export ACLI_OPENAI_KEY=$openAi_key" >> $1
         fi
     fi
 }
@@ -31,6 +27,8 @@ for file in ${files[@]}; do
 done
 
 openAi_key=""
+read -p "OpenAI api key ? (get yours at https://beta.openai.com/account/api-keys) : " -r
+if [ ! $REPLY == "" ]; then openAi_key=$REPLY; else echo "No key given, skipping key installation..."; return; fi
 
 files=($HOME/.bashrc $HOME/.zshrc)
 for file in ${files[@]}; do
@@ -88,7 +86,7 @@ echo $install_dir
 url="https://github.com/jseguillon/acli/releases/download/$VERSION/acli-$os-$architecture"
 dest="$install_dir/acli"
 echo "Dowloading $url into $install_dir/acli"
-sudo curl -sSL $url -o $dest
+sudo curl -SL $url -o $dest
 sudo chmod +x $dest
 
 set +e
@@ -120,6 +118,8 @@ echo "* use 'fix' for quick fixing typos: "
 echo "    [run typo command like 'rrm', 'lls', 'cd..', etc..]"
 echo "    then type 'fix' and get fixed command ready to run"
 echo 
-
+echo
 echo "If you like, please give a star on github.com or follow @Jseguillon on Twitter. Thanks."
+echo
+echo "Please start a new shell before playing with acli."
 echo

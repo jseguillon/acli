@@ -31,7 +31,7 @@ sudo chmod +x /usr/local/bin/acli
 Add configuration in any `.rc` file you want:
 
 ```
-CHAT_GPT_API_KEY="XXXXX"
+ACLI_OPENAI_KEY="XXXXX"
 
 alias fix='eval $(acli --script fixCmd "$(fc -nl -1)" $?)'
 howto() { h="$@"; eval $(acli --script howCmd "$h") ; }
