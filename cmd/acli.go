@@ -30,13 +30,26 @@ func main() {
 
 	// Define the root command
 	var rootCmd = &cobra.Command{
-		Use:   "gpt-chat",
-		Short: "Send a message to GPT chat and get a response. Needs CHAT_GPT_API_KEY env var to be defined.",
+		Use: "acli",
+		Short: `Send a message to Open AI's model and get a response. Needs ACLI_OPENAI_KEY env var to be defined. 
+
+# Sample usage:
+
+* use 'acli' for discussions or complex task solving: 
+	> acli "can GPT help me for daily command line tasks ?"
+	> acli "[complex description of feature request for bash/javascript/python/etc...]"
+* use 'howto' function for quick one liner answers and interactive mode: 
+	> howto openssl test SSL expiracy of github.com
+	> howto "find all files more than 30Mb "
+* use 'fix' for quick fixing typos: 
+	[run typo command like 'rrm', 'lls', 'cd..', etc..]
+	then type 'fix' and get fixed command ready to run`,
+
 		Run: func(cmd *cobra.Command, args []string) {
-			// Get the API key from the CHAT_GPT_API_KEY environment variable
-			apiKey = os.Getenv("CHAT_GPT_API_KEY")
+			// Get the API key from the ACLI_OPENAI_KEY environment variable
+			apiKey = os.Getenv("ACLI_OPENAI_KEY")
 			if apiKey == "" {
-				log.Fatal("Please set the CHAT_GPT_API_KEY environment variable")
+				log.Fatal("Please set the ACLI_OPENAI_KEY environment variable")
 			}
 
 			// Get the string argument to send to GPT chat
