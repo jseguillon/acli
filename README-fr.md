@@ -1,7 +1,7 @@
 # acli
 Une interface en ligne de commande assistée grâce aux APIs de Open AI.
 
-[![asciicast](https://asciinema.org/a/550368.svg)](https://asciinema.org/a/550368)
+[![asciicast](https://asciinema.org/a/550609.svg)](https://asciinema.org/a/550609)
 
 ## Prérequis
 
