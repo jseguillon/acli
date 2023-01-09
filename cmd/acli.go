@@ -89,7 +89,9 @@ func main() {
 				if !cmd.Flags().Changed("max-tokens") {
 					maxTokens = o.GetModelsDefaultToken(model, text)
 				}
-				//TODO : check if maxToken > 0 else blame it on prompt lenght
+				if maxTokens < 0 {
+					log.Fatal("Please give a shorted promt or override token estimation using '-m' flag. model max - estimated < 0")
+				}
 				jsonData = o.OpenAIQuery(text, maxTokens, temperature, frequencyPenalty, presencePenalty, n, model)
 			}
 
