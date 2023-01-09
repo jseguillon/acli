@@ -1,7 +1,7 @@
 # acli
 Assisted command line interface powered by OpenAI's API.
 
-[![asciicast](https://asciinema.org/a/550368.svg)](https://asciinema.org/a/550368)
+[![asciicast](https://asciinema.org/a/550609.svg)](https://asciinema.org/a/550609)
 
 ## Requirements
 
