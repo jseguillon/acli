@@ -3,7 +3,17 @@ package openai
 import (
 	"encoding/json"
 	"log"
+
+	"github.com/samber/lo"
 )
+
+func dictTuple(tuples []lo.Tuple2[[]byte, []byte]) map[lo.Tuple2[string, string]]int {
+	i := -1
+	return lo.SliceToMap(tuples, func(item lo.Tuple2[[]byte, []byte]) (lo.Tuple2[string, string], int) {
+		i++
+		return lo.T2(string(item.A), string(item.B)), i
+	})
+}
 
 // makeQuery constructs a JSON object for the POST request to the OpenAI API
 func OpenAIQuery(text string, maxTokens int, temperature float32, frequencyPenalty float32, presencePenalty float32, n int, model string) []byte {

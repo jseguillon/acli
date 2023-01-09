@@ -89,6 +89,7 @@ func main() {
 				if !cmd.Flags().Changed("max-tokens") {
 					maxTokens = o.GetModelsDefaultToken(model, text)
 				}
+				//TODO : check if maxToken > 0 else blame it on prompt lenght
 				jsonData = o.OpenAIQuery(text, maxTokens, temperature, frequencyPenalty, presencePenalty, n, model)
 			}
 
@@ -172,8 +173,7 @@ Use carefully and ensure that you have reasonable settings for max_tokens and st
 - code-davinci-002: most capable Codex model. Particularly good at translating natural language to code,
 - text-curie-001: very capable, but faster and lower cost than Davinci. 
 (See https://beta.openai.com/docs/models/ for more)`)
-	rootCmd.Flags().StringVarP(&script, "script", "", "", `Run pre-recorded script. Currently, only 'fixCmd' script is available. 
-Install whith: alias fix='$(./acli --script fixCmd "$(fc -nl -1)" $?)'`)
+	rootCmd.Flags().StringVarP(&script, "script", "", "", `Run embedded script.`)
 
 	// Parse the command-line arguments
 	if err := rootCmd.Execute(); err != nil {
