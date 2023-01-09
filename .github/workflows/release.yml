@@ -45,6 +45,8 @@ jobs:
         goosarch:
           - 'linux/amd64'
           - 'linux/arm64'
+          - 'darwin/amd64'
+          - 'darwin/arm64'
           - 'netbsd/amd64'
           - 'netbsd/arm64'
           - 'windows/amd64'
