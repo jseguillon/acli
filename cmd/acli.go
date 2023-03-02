@@ -113,30 +113,27 @@ func main() {
 			}
 			defer resp.Body.Close()
 
-			// Define a struct for the JSON response
+			// Define a struct for non gpt3.5 response
 			type jsonObject struct {
 				Choices []struct {
 					Text string `json:"text"`
 				} `json:"choices"`
 			}
 
-			//Chat GPT structs
-			type Message struct {
-				Role    string `json:"role"`
-				Content string `json:"content"`
-			}
-
+			//gpt3.5 message
 			type ChatGPTMessage struct {
 				Role    string `json:"role"`
 				Content string `json:"content"`
 			}
 
+			//gpt3.5 choice
 			type ChatGPTChoice struct {
 				Index        int            `json:"index"`
 				FinishReason string         `json:"finish_reason"`
 				Message      ChatGPTMessage `json:"message"`
 			}
 
+			//gpt3.5 response
 			type ChatGPTMessageResponse struct {
 				ID      string          `json:"id"`
 				Object  string          `json:"object"`
@@ -151,54 +148,55 @@ func main() {
 				log.Fatal(err)
 			}
 
-			if model == "gpt-3.5-turbo" {
-				var obj *ChatGPTMessageResponse
-				err = json.Unmarshal(body, &obj)
+			if resp.StatusCode != 200 {
+				log.Fatal("Error ", resp.StatusCode, string(body[:]))
+			}
 
-				if err != nil {
-					log.Fatal(err)
+			var respObj interface{}
+			if model == "gpt-3.5-turbo" {
+				respObj = &ChatGPTMessageResponse{}
+			} else {
+				respObj = &jsonObject{}
+			}
+			err = json.Unmarshal(body, &respObj)
+
+			if err != nil {
+				log.Fatal("Error unmarshalling ", err)
+			}
+
+			//Case of gpt-turbo aka ChatGPT
+			if turrboAnswer, ok := respObj.(*ChatGPTMessageResponse); ok {
+				if !ok {
+					log.Fatal("Error ", string(body[:]))
 				}
 
-				if resp.StatusCode != 200 {
-					log.Fatal("Error ", resp.StatusCode, string(body[:]))
+				if len(turrboAnswer.Choices) == 0 {
+					log.Fatal("Error ", "empty answer")
 				}
 
 				if script != "" {
-					s.RunScript(obj.Choices[0].Message.Content)
+					s.RunScript(turrboAnswer.Choices[0].Message.Content)
 				} else {
-					// Print the response
-					fmt.Print(strings.TrimPrefix(obj.Choices[0].Message.Content, "\n"))
+					fmt.Print(strings.TrimPrefix(turrboAnswer.Choices[0].Message.Content, "\n"))
+				}
+			} else {
+				answer, ok := respObj.(*jsonObject)
+				if !ok {
+					log.Fatal("Error ", string(body[:]))
+				}
+
+				if len(answer.Choices) == 0 {
+					log.Fatal("Error ", "empty answer")
+				}
+
+				// Print the response
+				for _, c := range answer.Choices {
+					fmt.Print(strings.TrimPrefix(c.Text, "\n"))
 					if n > 1 {
 						fmt.Println("")
 						fmt.Println("\n---------------------")
 					} else {
 						fmt.Println("")
-					}
-				}
-
-			} else { // Unmarshal the JSON object into a struct
-				var obj *jsonObject
-				err = json.Unmarshal(body, &obj)
-				if err != nil {
-					log.Fatal(err)
-				}
-
-				if resp.StatusCode != 200 {
-					log.Fatal("Error ", resp.StatusCode, string(body[:]))
-				}
-
-				if script != "" {
-					s.RunScript(obj.Choices[0].Text)
-				} else {
-					// Print the response
-					for _, c := range obj.Choices {
-						fmt.Print(strings.TrimPrefix(c.Text, "\n"))
-						if n > 1 {
-							fmt.Println("")
-							fmt.Println("\n---------------------")
-						} else {
-							fmt.Println("")
-						}
 					}
 				}
 			}
