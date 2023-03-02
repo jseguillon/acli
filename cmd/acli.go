@@ -74,16 +74,10 @@ func main() {
 			if script != "" {
 				if script == "fixCmd" {
 					text = s.GetScriptFixCmdQueryPrompt(text, args[0], args[1])
-					if !cmd.Flags().Changed("max-tokens") {
-						maxTokens = s.GetScriptFixCmdDefaultTokens()
-					}
 				} else if script == "howCmd" {
 					text = s.GetScriptHowCmdQueryPrompt(text, args[0])
-					if !cmd.Flags().Changed("max-tokens") {
-						maxTokens = s.GetScriptHowCmdDefaultTokens()
-					}
 				}
-				model = "text-davinci-003"
+				model = "gpt-3.5-turbo"
 				jsonData = o.OpenAIQuery(text, maxTokens, temperature, frequencyPenalty, presencePenalty, n, model)
 			} else {
 				if !cmd.Flags().Changed("max-tokens") {
@@ -98,8 +92,12 @@ func main() {
 			// Create a new HTTP client
 			client := &http.Client{}
 
+			endpoint := "https://api.openai.com/v1/chat/completions"
+			if model != "gpt-3.5-turbo" {
+				endpoint = "https://api.openai.com/v1/chat/completions"
+			}
 			// Build the request
-			req, err := http.NewRequest("POST", "https://api.openai.com/v1/completions", bytes.NewBuffer(jsonData))
+			req, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(jsonData))
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -122,34 +120,85 @@ func main() {
 				} `json:"choices"`
 			}
 
+			//Chat GPT structs
+			type Message struct {
+				Role    string `json:"role"`
+				Content string `json:"content"`
+			}
+
+			type ChatGPTMessage struct {
+				Role    string `json:"role"`
+				Content string `json:"content"`
+			}
+
+			type ChatGPTChoice struct {
+				Index        int            `json:"index"`
+				FinishReason string         `json:"finish_reason"`
+				Message      ChatGPTMessage `json:"message"`
+			}
+
+			type ChatGPTMessageResponse struct {
+				ID      string          `json:"id"`
+				Object  string          `json:"object"`
+				Created int64           `json:"created"`
+				Model   string          `json:"model"`
+				Choices []ChatGPTChoice `json:"choices"`
+			}
+
 			// Read the response body
 			body, err := io.ReadAll(resp.Body)
 			if err != nil {
 				log.Fatal(err)
 			}
 
-			// Unmarshal the JSON object into a struct
-			var obj jsonObject
-			err = json.Unmarshal(body, &obj)
-			if err != nil {
-				log.Fatal(err)
-			}
+			if model == "gpt-3.5-turbo" {
+				var obj *ChatGPTMessageResponse
+				err = json.Unmarshal(body, &obj)
 
-			if resp.StatusCode != 200 {
-				log.Fatal("Error ", resp.StatusCode, string(body[:]))
-			}
+				if err != nil {
+					log.Fatal(err)
+				}
 
-			if script != "" {
-				s.RunScript(obj.Choices[0].Text)
-			} else {
-				// Print the response
-				for _, c := range obj.Choices {
-					fmt.Print(strings.TrimPrefix(c.Text, "\n"))
+				if resp.StatusCode != 200 {
+					log.Fatal("Error ", resp.StatusCode, string(body[:]))
+				}
+
+				if script != "" {
+					s.RunScript(obj.Choices[0].Message.Content)
+				} else {
+					// Print the response
+					fmt.Print(strings.TrimPrefix(obj.Choices[0].Message.Content, "\n"))
 					if n > 1 {
 						fmt.Println("")
 						fmt.Println("\n---------------------")
 					} else {
 						fmt.Println("")
+					}
+				}
+
+			} else { // Unmarshal the JSON object into a struct
+				var obj *jsonObject
+				err = json.Unmarshal(body, &obj)
+				if err != nil {
+					log.Fatal(err)
+				}
+
+				if resp.StatusCode != 200 {
+					log.Fatal("Error ", resp.StatusCode, string(body[:]))
+				}
+
+				if script != "" {
+					s.RunScript(obj.Choices[0].Text)
+				} else {
+					// Print the response
+					for _, c := range obj.Choices {
+						fmt.Print(strings.TrimPrefix(c.Text, "\n"))
+						if n > 1 {
+							fmt.Println("")
+							fmt.Println("\n---------------------")
+						} else {
+							fmt.Println("")
+						}
 					}
 				}
 			}
@@ -170,8 +219,9 @@ Positive values penalize new tokens based on their existing frequency in the tex
 	rootCmd.Flags().IntVarP(&n, "choices", "n", 1, `How many completions to generate for each prompt. 
 Note: Because this parameter generates many completions, it can quickly consume your token quota. 
 Use carefully and ensure that you have reasonable settings for max_tokens and stop.`)
-	rootCmd.Flags().StringVarP(&model, "model", "", "text-davinci-003", `Open AI model to use. Some examples:
-- text-davinci-003: most capable GPT-3 model,
+	rootCmd.Flags().StringVarP(&model, "model", "", "gpt-3.5-turbo", `Open AI model to use. Some examples:
+- gpt-3.5-turbo: Chat GPT model, (no other flags apply),
+- text-davinci-003: previously most capable GPT-3 model,
 - code-davinci-002: most capable Codex model. Particularly good at translating natural language to code,
 - text-curie-001: very capable, but faster and lower cost than Davinci. 
 (See https://beta.openai.com/docs/models/ for more)`)
