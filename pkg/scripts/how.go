@@ -6,10 +6,5 @@ import (
 
 // Create specific prompt for command line fixes
 func GetScriptHowCmdQueryPrompt(text string, cmd string) string {
-	return fmt.Sprintf("Answer shell command or script that can be piped to solve given problem. \\n\\nProblem: \"%s\" \\nCommand, no leading #: ", cmd)
-}
-
-// Enforce max tokens for low cost query
-func GetScriptHowCmdDefaultTokens() int {
-	return 512
+	return fmt.Sprintf("Give linux commands for problem I give you. Only output the command ready to be copy-paste, with no comment. \\nProblem: \\n%s. \\n\\nCommand, direclty pipeable, no quotes: \\n", cmd)
 }

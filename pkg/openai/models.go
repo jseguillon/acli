@@ -18,6 +18,8 @@ func GetModelsDefaultToken(model string, prompt string) int {
 
 	ratio := 1.15
 	switch model {
+	case "gpt-3.5-turbo":
+		maxTokens = 4000
 	case "text-davinci-003":
 		maxTokens = 4000 - int((ratio * float64(len(encoded))))
 	case "text-curie-001":
